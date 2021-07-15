@@ -16,6 +16,7 @@ struct GPIO {
     volatile uint32_t AFRH;
 };
 
+extern struct GPIO *const GPIOC;
 extern struct GPIO *const GPIOD;
 
 #endif /* GPIO_H */
