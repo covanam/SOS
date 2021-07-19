@@ -12,9 +12,6 @@ struct SYST_t {
 static struct SYST_t *const SYST = (struct SYST_t *)(0xE000E010);
 
 void SVC_Handler(void) {
-    SYST->RVR = 16000u;
-    SYST->CVR = 16000u;
-    SYST->CSR = 7u;
 }
 
 void SysTick_Handler(void) {
@@ -27,6 +24,11 @@ void SysTick_Handler(void) {
 }
 
 void start_os(void) {
+    /* Set up SysTick every 100ms */
+    SYST->RVR = 16u * 1000u * 100u;
+    SYST->CVR = 16u * 1000u * 100u;
+    SYST->CSR = 7u;
+
     __asm__("svc #0");
     while (1) {
         __asm__("wfe");
