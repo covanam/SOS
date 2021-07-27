@@ -1,6 +1,5 @@
 #include "gpio.h"
 #include "os.h"
-#include "power.h"
 #include "rcc.h"
 #include "uart.h"
 
@@ -27,7 +26,18 @@ int main() {
     /* alternative function 8: USART6 */
     GPIOC->AFRL = (8u << 24u) | (8u << 28u);
 
-    print(UART6, "Hello world!\r\n");
-
     start_os();
+}
+
+void blinking_green(void) {
+    uint32_t count = 0;
+    while(1) {
+        if (count < MsCount) {
+            /* toggle every 500ms */
+            count += 500u;
+            GPIOD->ODR ^= (1u << 12u);
+        }
+
+        waitevent();
+    }
 }
