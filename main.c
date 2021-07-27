@@ -33,11 +33,31 @@ void blinking_green(void) {
     uint32_t count = 0;
     while(1) {
         if (count < MsCount) {
-            /* toggle every 500ms */
-            count += 500u;
+            count += 500;
             GPIOD->ODR ^= (1u << 12u);
         }
+        waitevent();
+    }
+}
 
+void blinking_blue(void) {
+    uint32_t count = 0;
+    while(1) {
+        if (count < MsCount) {
+            count += 2000;
+            GPIOD->ODR ^= (1u << 15u);
+        }
+        waitevent();
+    }
+}
+
+void blinking_red(void) {
+    uint32_t count = 0;
+    while(1) {
+        if (count < MsCount) {
+            count += 300;
+            GPIOD->ODR ^= (1u << 14u);
+        }
         waitevent();
     }
 }

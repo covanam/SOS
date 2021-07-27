@@ -15,8 +15,8 @@ MsCount:
     .bss
     .align  2
 threadctx:
-    .space  128
-    .size   threadctx, 128
+    .space  256
+    .size   threadctx, 256
 
     .data
     .align  2
@@ -40,7 +40,18 @@ start_os:
 
     /* initialize thread context */
     ldr r0, =threadctx
+    add r0, r0, #64
     ldr r1, =blinking_green
+    bl initContext
+
+    ldr r0, =threadctx
+    add r0, r0, #128
+    ldr r1, =blinking_blue
+    bl initContext
+
+    ldr r0, =threadctx
+    add r0, r0, #192
+    ldr r1, =blinking_red
     bl initContext
 
     start_os_loop:
@@ -62,19 +73,27 @@ SysTick_Handler:
     str r1, [r0]
 
     ldr r0, =threadidx
-    ldr r1, [r0]
-    teq r1, #0
-    bne noinit
-
-    add r1, r1, #1
-    str r1, [r0]
-
-    ldr r0, =threadctx
+    ldr r0, [r0]
+    lsl r0, r0, #6
+    ldr r1, =threadctx
+    add r0, r1, r0
     add r1, sp, #4
+    bl saveContext
 
+    ldr r1, =threadidx
+    ldr r0, [r1]
+    add r0, r0, #1
+    teq r0, #4  // max threads
+    bne systick_none
+    mov r0, #1
+    systick_none:
+    str r0, [r1]
+    lsl r0, r0, #6
+    ldr r1, =threadctx
+    add r0, r1, r0
+    add r1, sp, #4
     bl restoreContext
 
-noinit:
     pop {lr}
     bx lr
 
@@ -82,10 +101,13 @@ noinit:
 
 .section  .text.saveContext
 .type  saveContext, %function
-saveContext:  
-    stmia r0!, {r4-r11}
-    pop {r1-r8}
-    stmia r0!, {r1-r8}
+// param: context_address, stack_address
+saveContext:
+    add r0, r0, #32
+    stmia r0, {r4-r11}
+    sub r0, r0, #32
+    ldmia r1, {r1-r8}
+    stmia r0, {r1-r8}
     bx lr
 .size  saveContext, .-saveContext
 
