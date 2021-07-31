@@ -1,5 +1,5 @@
 # source files
-SRCS=main.c gpio.c rcc.c os.s uart.c startup_stm32f411xe.s
+SRCS=main.c gpio.c rcc.c os.s uart.c startup.c
 
 # Binaries will be generated with this name (.elf, .bin, .hex)
 PROJ_NAME=sos
