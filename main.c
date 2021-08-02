@@ -29,14 +29,23 @@ int main() {
     start_os();
 }
 
+void led(uint32_t n) {
+    GPIOD->ODR ^= (1 << n);
+}
+
+void toggle_green(void) {
+    GPIOD->ODR ^= (1u << 12u);
+    print(UART6, "nothing\r\n");
+    waitevent();
+}
+
 void blinking_green(void) {
     uint32_t count = 0;
     while(1) {
         if (count < MsCount) {
             count += 500;
-            GPIOD->ODR ^= (1u << 12u);
+            toggle_green();
         }
-        waitevent();
     }
 }
 
