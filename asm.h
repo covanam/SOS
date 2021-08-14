@@ -34,5 +34,5 @@
     .align  2
     .size   \name, \size
     \name\():
-    .space  16
+    .space  \size
 .endm

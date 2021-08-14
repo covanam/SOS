@@ -26,7 +26,7 @@ int main() {
     /* alternative function 8: USART6 */
     GPIOC->AFRL = (8u << 24u) | (8u << 28u);
 
-    start_os();
+    startOs();
 }
 
 void led(uint32_t n) {
@@ -36,13 +36,13 @@ void led(uint32_t n) {
 void toggle_green(void) {
     GPIOD->ODR ^= (1u << 12u);
     print(UART6, "nothing\r\n");
-    waitevent();
+    yield();
 }
 
 void blinking_green(void) {
     uint32_t count = 0;
     while(1) {
-        if (count < MsCount) {
+        if (count < getMsCount()) {
             count += 500;
             toggle_green();
         }
@@ -52,21 +52,21 @@ void blinking_green(void) {
 void blinking_blue(void) {
     uint32_t count = 0;
     while(1) {
-        if (count < MsCount) {
+        if (count < getMsCount()) {
             count += 2000;
             GPIOD->ODR ^= (1u << 15u);
         }
-        waitevent();
+        yield();
     }
 }
 
 void blinking_red(void) {
     uint32_t count = 0;
     while(1) {
-        if (count < MsCount) {
+        if (count < getMsCount()) {
             count += 300;
             GPIOD->ODR ^= (1u << 14u);
         }
-        waitevent();
+        yield();
     }
 }

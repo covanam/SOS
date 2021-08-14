@@ -3,10 +3,10 @@
 
 #include <stdint.h>
 
-extern volatile uint32_t MsCount;
+uint32_t getMsCount(void);
 
-void start_os(void);
+void startOs(void);
 
-void waitevent(void);
+void yield(void);
 
 #endif
