@@ -1,35 +1,16 @@
-.syntax unified
-.cpu cortex-m4
-.fpu softvfp
-.thumb
+.include "asm.h"
 
-
-.global MsCount
-    .data
-    .align  2
-    .type   MsCount, %object
-    .size   MsCount, 4
-MsCount:
+OBJECT MsCount, 4
     .word   0
 
-    .bss
-    .align  2
-threadctx:
-    .space  16
-    .size   threadctx, 16
+MEMORY threadctx, 16
 
-    .data
-    .align  2
-    .type   threadidx, %object
-    .size   threadidx, 4
-threadidx:
+OBJECT threadidx, 4
     .word   0
 
 
-.global start_os
-.section  .text.start_os
-.type  start_os, %function
-start_os:
+BEGIN start_os
+
     /* systick every 1ms */
     ldr r0, =0xE000E010
     ldr r1, =16000
@@ -58,13 +39,12 @@ start_os:
     wfe
     b start_os_loop
 
-.size  start_os, .-start_os
+END start_os
 
 
-.global SysTick_Handler
-.section  .text.SysTick_Handler
-.type  SysTick_Handler, %function
-SysTick_Handler:
+
+BEGIN SysTick_Handler
+
     ldr r0, =MsCount
     ldr r1, [r0]
     add r1, r1, #1
@@ -87,12 +67,13 @@ SysTick_Handler:
     ldr lr,=0xFFFFFFF9
     bx lr
 
-.size SysTick_Handler, .-SysTick_Handler
+END SysTick_Handler
 
-.section  .text.saveContext
-.type  saveContext, %function
-// param: current thread index
-saveContext:
+
+
+BEGIN saveContext 
+    @ current thread index
+
     push {r4-r11}
     ldr r1, =threadctx
     lsl r0, r0, #2
@@ -101,12 +82,14 @@ saveContext:
     str sp, [r0]
 
     bx lr
-.size  saveContext, .-saveContext
 
-.section  .text.restoreContext
-.type  restoreContext, %function
-// param: thread index
-restoreContext:
+END saveContext
+
+
+
+LOCAL restoreContext
+    @ thread index
+
     ldr r1, =threadctx
     lsl r2, r0, #2
     add r1, r1, r2
@@ -114,13 +97,16 @@ restoreContext:
 
     pop {r4-r11}
     bx lr
-.size  restoreContext, .-restoreContext
+
+END restoreContext
 
 
-.section  .text.initContext
-.type  initContext, %function
-// param: thread index, SP, addr
-initContext:
+
+LOCAL initContext
+    @ threadIndex
+    @ SP
+    @ addr
+
     ldr r3, =threadctx
     lsl r0, r0, #2
     add r0, r3, r0
@@ -135,15 +121,14 @@ initContext:
     str r2, [r1, #60]
 
     bx lr
-.size  initContext, .-initContext
+
+END initContext
 
 
-.global waitevent
-.section  .text.waitevent
-.type  waitevent, %function
-waitevent:
+
+BEGIN waitevent
     /* double wfe due to some bug with the chip */
     wfe
     wfe
     bx lr
-.size  waitevent, .-waitevent
+END waitevent
