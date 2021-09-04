@@ -21,6 +21,7 @@ END enableSysTick
 
 
 BEGIN SysTick_Handler
+    push {r4-r11}
 
     ldr r0, =savedStackPointer
     str sp, [r0]
@@ -58,7 +59,6 @@ BEGIN returnToThread
 
     ldr r2, =savedStackPointer
     ldr r2, [r2]
-    stmdb r2!, {r4-r11}
     str r2, [r0]
 
     mov sp, r1
