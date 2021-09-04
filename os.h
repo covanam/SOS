@@ -5,7 +5,7 @@
 
 uint32_t getMsCount(void);
 
-void startOs(void);
+__attribute__((noreturn)) void startOs(void);
 
 void yield(void);
 

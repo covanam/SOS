@@ -18,11 +18,7 @@ void startOs(void) {
     threadList[i++] = startThread(blinking_blue);
     threadList[i++] = startThread(blinking_red);
 
-    enableSysTick();
-
-    while(1) {
-        idle();
-    }
+    enterOs();
 }
 
 void OS_Handler(void) {

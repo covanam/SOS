@@ -6,7 +6,7 @@
 extern char _estack;
 
 struct Thread startThread(void* function) {
-    /* first slot is reserved for idle thread */
+    /* first slot is stack reserved for OS */
     static int free_slot = 1;
 
     void *stack = &_estack - free_slot * STACKSIZE;
