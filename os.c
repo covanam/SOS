@@ -8,7 +8,7 @@ struct Thread {
 };
 
 static int numThread = 1; // have at least the idle thread
-struct Thread threadList[5];
+struct Thread threadList[50];
 
 void terminal(void);
 

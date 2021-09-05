@@ -8,13 +8,19 @@ static void print(const char* s) {
     }
 }
 
+int strcmp(const char* s1, const char* s2)
+{
+    while (*s1 && (*s1 == *s2))
+        s1++, s2++;
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+
 void terminal(void) {
-    startThread(blinking_green);
-    startThread(blinking_blue);
-    startThread(blinking_red);
+    char buf[20];
+    char *pbuf = buf;
 
     print("\r\nWelcome to Simple operating system\r\n");
-    print("Compiled on " __DATE__ " at " __TIME__);
+    print("Compiled on " __DATE__ " at " __TIME__ "\r\n");
 
     while (1) {
         char c;
@@ -25,6 +31,26 @@ void terminal(void) {
 
         /* echo typed character */
         uart_write(UART6, c);
-        if (c == '\r') uart_write(UART6, '\n');
+
+        if (c != '\r') {
+            *(pbuf++) = c;
+        }
+        else {
+            uart_write(UART6, '\n'); //require for proper newline in putty
+            *pbuf = '\0';
+            pbuf = buf;
+
+            if (0 == strcmp(buf, "red"))
+                startThread(blinking_red);
+            else if (0 == strcmp(buf, "blue"))
+                startThread(blinking_blue);
+            else if (0 == strcmp(buf, "green"))
+                startThread(blinking_green);
+            else {
+                print("Unrecognized command: ");
+                print(buf);
+                print("\r\n");
+            }
+        }
     }
 }

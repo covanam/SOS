@@ -57,7 +57,7 @@ SECTIONS
     {
         . = ALIGN(8);
         /* 10 KB for process stack*/
-        . = . + 10240;
+        . = . + 51200;
         _procstack = .;
     } >RAM
 }
