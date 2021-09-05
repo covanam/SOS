@@ -36,6 +36,10 @@ BEGIN SysTick_Handler
 
     bl OS_Handler
 
+    mrs r0, psp
+    add r0, #32
+    msr psp, r0
+
     mov lr, #-3
     bx lr
 END SysTick_Handler
