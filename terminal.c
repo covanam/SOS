@@ -1,4 +1,9 @@
 #include "uart.h"
+#include "os.h"
+
+void blinking_green(void);
+void blinking_blue(void);
+void blinking_red(void);
 
 static void print(const char* s) {
     for (; *s != '\0'; ++s) {
@@ -7,6 +12,10 @@ static void print(const char* s) {
 }
 
 void terminal(void) {
+    startThread(blinking_green);
+    startThread(blinking_blue);
+    startThread(blinking_red);
+
     print("\r\nWelcome to Simple operating system\r\n");
     print("This is developed by Nam Cao\r\n");
 

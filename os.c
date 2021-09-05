@@ -1,24 +1,18 @@
 #include "os.h"
 #include "armv7-m.h"
-#include "thread.h"
 
 static uint32_t msCounter;
 
+struct Thread {
+	void* stackPtr;
+};
+
 struct Thread threadList[5];
 
-extern char threadStack;
-
-void blinking_green(void);
-void blinking_blue(void);
-void blinking_red(void);
 void terminal(void);
 
 void startOs(void) {
-    int i = 1; /* first thread is idle thread */
-    threadList[i++] = startThread(blinking_green);
-    threadList[i++] = startThread(blinking_blue);
-    threadList[i++] = startThread(blinking_red);
-    threadList[i++] = startThread(terminal);
+    startThread(terminal);
 
     enterOs();
 }
@@ -44,4 +38,22 @@ void yield(void) {
 
 uint32_t getMsCount(void) {
     return msCounter;
+}
+
+#define STACKSIZE 1024u
+extern char _procstack[];
+
+void startThread(void (*entryAddr)(void)) {
+    static int free_stack_slot = 0;
+    static int free_thread_slot = 1; // first slot is for idle thread
+
+    void *stack = _procstack - free_stack_slot * STACKSIZE;
+
+    stack = initThreadStack(stack, entryAddr);
+
+    free_stack_slot++;
+
+    threadList[free_thread_slot].stackPtr = stack;
+
+    free_thread_slot++;
 }

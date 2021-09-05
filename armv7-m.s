@@ -3,16 +3,16 @@
 
 
 BEGIN enterOs
-    /* initialize main SP, reserve 64 bytes for idle thread */
-    ldr sp, =_estack-64
+    /* initialize main SP */
+    ldr sp, =_end_os_stack
 
     /* switch to process stack pointer */
     mrs r0, control
     orr r0, #2
     msr control, r0
 
-    /* initialize process stack pointer */
-    ldr sp, =_estack
+    /* initialize idle thread stack pointer */
+    ldr sp, =_start_os_stack+64
 
     /* systick every 1ms */
     ldr r0, =0xE000E010
@@ -82,7 +82,7 @@ BEGIN returnToThread
     msr psp, r1
 
     /* reset main stack pointer to initial value */
-    ldr sp, =_estack-64
+    ldr sp, =_end_os_stack
 
     mov lr, #-3
     bx lr

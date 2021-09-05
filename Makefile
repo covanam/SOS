@@ -1,5 +1,5 @@
 # source files
-SRCS=main.c gpio.c rcc.c os.c thread.c armv7-m.s uart.c startup.c terminal.c
+SRCS=main.c gpio.c rcc.c os.c armv7-m.s uart.c startup.c terminal.c
 
 # Binaries will be generated with this name (.elf, .bin, .hex)
 PROJ_NAME=sos

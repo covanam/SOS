@@ -43,4 +43,21 @@ SECTIONS
         *(.bss)
         _ebss = .;
     } >RAM
+
+    .osstack :
+    {   
+        /* 1 KB for OS stack */
+        . = ALIGN(8);
+        _start_os_stack = .;
+        . = . + 1024;
+        _end_os_stack = .;
+    } >RAM
+
+    .procstack :
+    {
+        . = ALIGN(8);
+        /* 10 KB for process stack*/
+        . = . + 10240;
+        _procstack = .;
+    } >RAM
 }

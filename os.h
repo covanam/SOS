@@ -9,4 +9,6 @@ __attribute__((noreturn)) void startOs(void);
 
 void yield(void);
 
+void startThread(void (*entryAddress)(void));
+
 #endif
