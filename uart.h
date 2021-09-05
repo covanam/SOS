@@ -16,6 +16,7 @@ struct UART_t {
 extern struct UART_t *const UART1;
 extern struct UART_t *const UART6;
 
-void print(struct UART_t *const u, const char *s);
+void uart_write(struct UART_t *const uart, char c);
+char uart_read(struct UART_t *const uart);
 
 #endif /* UART_H */

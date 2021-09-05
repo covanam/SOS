@@ -17,8 +17,8 @@ int main() {
     /* config 9600 baud (clk = 16MHz) */
     UART6->BRR = (208u << 4U) | 3U;
 
-    /* set over8, enable, TE */
-    UART6->CR1 = (1U << 15U) | (1U << 13U) | (1U << 3U);
+    /* set over8, enable, TE, RE*/
+    UART6->CR1 = (1U << 15U) | (1U << 13U) | (1U << 3U) | (1U << 2U);
 
     /* setup pin6, pin7 for alternative function mode */
     GPIOC->MODER = (2u << 12u) | (2u << 14u);
@@ -35,7 +35,6 @@ void led(uint32_t n) {
 
 void toggle_green(void) {
     GPIOD->ODR ^= (1u << 12u);
-    print(UART6, "nothing\r\n");
     yield();
 }
 
