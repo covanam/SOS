@@ -25,5 +25,6 @@ void terminal(void) {
 
         /* echo typed character */
         uart_write(UART6, c);
+        if (c == '\r') uart_write(UART6, '\n');
     }
 }
