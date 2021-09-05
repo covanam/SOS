@@ -1,9 +1,6 @@
 #include "uart.h"
 #include "os.h"
-
-void blinking_green(void);
-void blinking_blue(void);
-void blinking_red(void);
+#include "apps.h"
 
 static void print(const char* s) {
     for (; *s != '\0'; ++s) {

@@ -7,6 +7,7 @@ struct Thread {
 	void* stackPtr;
 };
 
+static int numThread = 1; // have at least the idle thread
 struct Thread threadList[5];
 
 void terminal(void);
@@ -24,7 +25,7 @@ void OS_Handler(void) {
 
     /* a stupid round-robin scheduler */
     activeThread++;
-    if (activeThread == 5) activeThread = 0;
+    if (activeThread == numThread) activeThread = 0;
 
     returnToThread(
         &threadList[oldThread].stackPtr,
@@ -56,4 +57,6 @@ void startThread(void (*entryAddr)(void)) {
     threadList[free_thread_slot].stackPtr = stack;
 
     free_thread_slot++;
+
+    numThread++;
 }
