@@ -14,7 +14,7 @@ void terminal(void) {
     startThread(blinking_red);
 
     print("\r\nWelcome to Simple operating system\r\n");
-    print("This is developed by Nam Cao\r\n");
+    print("Compiled on " __DATE__ " at " __TIME__);
 
     while (1) {
         char c;
