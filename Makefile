@@ -9,10 +9,9 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 
 # Compiler flags
-CFLAGS  = -g -O2 -Wall -Tlinker.ld
-CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
-CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
-CFLAGS += --specs=nosys.specs -nostdlib
+CFLAGS  = -Wall -Werror -Tlinker.ld
+CFLAGS += -mthumb -march=armv7-m
+CFLAGS += -nostdlib
 
 # object files
 OBJS = $(SRCS:.c=.o)

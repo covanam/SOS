@@ -1,5 +1,5 @@
 .syntax unified
-.cpu cortex-m4
+.arch armv7-m
 .fpu softvfp
 .thumb
 
