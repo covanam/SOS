@@ -9,10 +9,10 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 
 # Compiler flags
-CFLAGS  = -g -O2 -Wall -TSTM32F411RE_FLASH.ld
+CFLAGS  = -g -O2 -Wall -Tlinker.ld
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
-CFLAGS += --specs=nosys.specs 
+CFLAGS += --specs=nosys.specs -nostdlib
 
 # object files
 OBJS = $(SRCS:.c=.o)
