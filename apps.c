@@ -4,37 +4,25 @@
 
 void toggle_green(void) {
     GPIOD->ODR ^= (1u << 12u);
-    yield();
 }
 
 void blinking_green(void) {
-    uint32_t count = 0;
     while(1) {
-        if (count < getMsCount()) {
-            count += 500;
-            toggle_green();
-        }
+        toggle_green();
+        sleep(500);
     }
 }
 
 void blinking_blue(void) {
-    uint32_t count = 0;
     while(1) {
-        if (count < getMsCount()) {
-            count += 2000;
-            GPIOD->ODR ^= (1u << 15u);
-        }
-        yield();
+        GPIOD->ODR ^= (1u << 15u);
+        sleep(2000);
     }
 }
 
 void blinking_red(void) {
-    uint32_t count = 0;
     while(1) {
-        if (count < getMsCount()) {
-            count += 300;
-            GPIOD->ODR ^= (1u << 14u);
-        }
-        yield();
+        GPIOD->ODR ^= (1u << 14u);
+        sleep(300);
     }
 }

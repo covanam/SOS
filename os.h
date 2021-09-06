@@ -7,8 +7,8 @@ uint32_t getMsCount(void);
 
 __attribute__((noreturn)) void startOs(void);
 
-void yield(void);
-
 void startThread(void (*entryAddress)(void));
+
+void sleep(int);
 
 #endif

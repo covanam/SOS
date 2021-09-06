@@ -91,7 +91,9 @@ END returnToThread
 
 
 
-BEGIN idle
+BEGIN _sleep
+    @param duration
+    svc #0
     wfi
     bx lr
-END idle
+END _sleep
