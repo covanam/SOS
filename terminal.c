@@ -1,12 +1,6 @@
-#include "uart.h"
 #include "os.h"
 #include "apps.h"
-
-static void print(const char* s) {
-    for (; *s != '\0'; ++s) {
-        uart_write(UART6, *s);
-    }
-}
+#include <stdio.h>
 
 int strcmp(const char* s1, const char* s2)
 {
@@ -19,24 +13,24 @@ void terminal(void) {
     char buf[20];
     char *pbuf = buf;
 
-    print("\r\nWelcome to Simple operating system\r\n");
-    print("Compiled on " __DATE__ " at " __TIME__ "\r\n");
+    printf("\r\nWelcome to Simple operating system\r\n");
+    printf("Compiled on " __DATE__ " at " __TIME__ "\r\n");
 
     while (1) {
         char c;
 
-        while (c = uart_read(UART6), c == '\0') {
+        while (c = getchar(), c == '\0') {
             /* wait for user input */
         }
 
         /* echo typed character */
-        uart_write(UART6, c);
+        putchar(c);
 
         if (c != '\r') {
             *(pbuf++) = c;
         }
         else {
-            uart_write(UART6, '\n'); //require for proper newline in putty
+            putchar('\n'); //require for proper newline in putty
             *pbuf = '\0';
             pbuf = buf;
 
@@ -47,9 +41,7 @@ void terminal(void) {
             else if (0 == strcmp(buf, "green"))
                 startThread(blinking_green);
             else {
-                print("Unrecognized command: ");
-                print(buf);
-                print("\r\n");
+                printf("Unrecognized command: %s\r\n", buf);
             }
         }
     }

@@ -11,8 +11,9 @@ void uart_write(struct UART_t *const uart, char c) {
 }
 
 char uart_read(struct UART_t *const uart) {
-    if ((uart->SR & (1u << 5u)) != 0u)
-        return uart->DR;
-    else
-        return '\0';
+    while ((uart->SR & (1u << 5u)) == 0u) {
+        /* wait for user to input something */
+    }
+
+    return uart->DR;
 }
