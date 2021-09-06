@@ -11,7 +11,7 @@ OBJCOPY=arm-none-eabi-objcopy
 # Compiler flags
 CFLAGS  = -Wall -Werror -Tlinker.ld
 CFLAGS += -mthumb -march=armv7-m
-CFLAGS += -nostdlib
+CFLAGS += -nostdlib -ffreestanding
 
 # object files
 OBJS = $(SRCS:.c=.o)

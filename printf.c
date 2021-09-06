@@ -31,14 +31,6 @@ int getchar(void) {
 	return uart_read(UART6);
 }
 
-int puts(const char * s) {
-	for (; *s != '\0'; ++s)
-		putchar(*s);
-	putchar('\n');
-
-	return 1;
-}
-
 static void printchar(char **str, int c)
 {
 	extern int putchar(int c);
