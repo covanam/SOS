@@ -22,15 +22,6 @@
 #include <stdarg.h>
 #include "uart.h"
 
-int putchar(int c) {
-	uart_write(UART6, (char)c);
-	return c;
-}
-
-int getchar(void) {
-	return uart_read(UART6);
-}
-
 static void printchar(char **str, int c)
 {
 	extern int putchar(int c);
