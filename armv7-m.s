@@ -91,6 +91,37 @@ END returnToThread
 
 
 
+BEGIN SVC_Handler
+/* this function must preserve r0-r3, as these registers are passed
+as arugments from thread service call into service routine */
+    push {r4, r5, lr}
+
+    /* retrive the svc command */
+    mrs r4, psp
+    ldr r4, [r4, #0x18]
+    sub r4, #2
+    ldrh r4, [r4]
+
+    /* get svc number */
+    and r4, #0xff
+
+    /* get the svc function address to run */
+    ldr r5, =service_routine
+    ldr r4, [r5, r4]
+
+    /* call svc function */
+    blx r4
+
+    pop {r4, r5, lr}
+
+    bx lr
+
+    service_routine:
+    .word svc_sleep
+END SVC_Handler
+
+
+
 BEGIN _sleep
     @param duration
     svc #0

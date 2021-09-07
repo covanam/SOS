@@ -90,7 +90,7 @@ void sleep(int duration) {
     _sleep((uint32_t)duration);
 }
 
-void SVC_Handler(uint32_t duration) {
+void svc_sleep(uint32_t duration) {
     for (int i = 0; i < numThread; ++i) {
         if (threadList[i].state == ACTIVE) {
             threadList[i].state = SLEEP;
