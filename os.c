@@ -109,6 +109,10 @@ uint32_t getMsCount(void) {
 extern char _procstack[];
 
 void startThread(void (*entryAddr)(void)) {
+    _startThread((uint32_t)entryAddr);
+}
+
+void svc_startThread(void (*entryAddr)(void)) {
     static int free_stack_slot = 0;
     static int free_thread_slot = 1; // first slot is for idle thread
 

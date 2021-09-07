@@ -92,32 +92,40 @@ END returnToThread
 
 
 BEGIN SVC_Handler
-/* this function must preserve r0-r3, as these registers are passed
-as arugments from thread service call into service routine */
-    push {r4, r5, lr}
+    /* get interrupt stack (check LR to see if it's MSP or PSP) */
+    mov r0, sp
+    mov r1, #-3
+    teq lr, r1
+    bne correct_stack_already
+    mrs r0, psp
+    correct_stack_already:
 
-    /* retrive the svc command */
-    mrs r4, psp
-    ldr r4, [r4, #0x18]
-    sub r4, #2
-    ldrh r4, [r4]
+    /* retrive the svc instruction's encoding */
+    ldr r1, [r0, #0x18]
+    sub r1, #2
+    ldrh r1, [r1]
 
     /* get svc number */
-    and r4, #0xff
+    and r1, #0xff
 
     /* get the svc function address to run */
-    ldr r5, =service_routine
-    ldr r4, [r5, r4]
+    ldr r2, =service_routine
+    lsl r1, #2
+    ldr r1, [r2, r1]
+
+    /* pass original argument to svc function */
+    ldr r0, [r0]
 
     /* call svc function */
-    blx r4
-
-    pop {r4, r5, lr}
+    push {lr}
+    blx r1
+    pop {lr}
 
     bx lr
 
     service_routine:
     .word svc_sleep
+    .word svc_startThread
 END SVC_Handler
 
 
@@ -128,3 +136,11 @@ BEGIN _sleep
     wfi
     bx lr
 END _sleep
+
+
+
+BEGIN _startThread
+    @param entry address
+    svc #1
+    bx lr
+END _startThread
