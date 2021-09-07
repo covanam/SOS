@@ -22,9 +22,9 @@ BEGIN enterOs
     mov r1, #7
     str r1, [r0]
 
-    OsIdleLoop:
+    .LOsIdleLoop:
     wfi
-    b OsIdleLoop
+    b .LOsIdleLoop
 END enterOs
 
 
@@ -96,9 +96,9 @@ BEGIN SVC_Handler
     mov r0, sp
     mov r1, #-3
     teq lr, r1
-    bne correct_stack_already
+    bne .Lcorrect_stack_already
     mrs r0, psp
-    correct_stack_already:
+    .Lcorrect_stack_already:
 
     /* retrive the svc instruction's encoding */
     ldr r1, [r0, #0x18]
@@ -109,7 +109,7 @@ BEGIN SVC_Handler
     and r1, #0xff
 
     /* get the svc function address to run */
-    ldr r2, =service_routine
+    ldr r2, =.Lservice_routine
     lsl r1, #2
     ldr r1, [r2, r1]
 
@@ -123,7 +123,7 @@ BEGIN SVC_Handler
 
     bx lr
 
-    service_routine:
+    .Lservice_routine:
     .word svc_sleep
     .word svc_startThread
 END SVC_Handler
