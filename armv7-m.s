@@ -93,12 +93,10 @@ END return_to_thread
 
 BEGIN SVC_Handler
     /* get interrupt stack (check LR to see if it's MSP or PSP) */
-    mov r0, sp
-    mov r1, #-3
-    teq lr, r1
-    bne .Lcorrect_stack_already
-    mrs r0, psp
-    .Lcorrect_stack_already:
+    cmp lr, #-3
+    ite eq
+    mrseq r0, psp
+    movne.n r0, sp
 
     /* retrive the svc instruction's encoding */
     ldr r1, [r0, #0x18]
