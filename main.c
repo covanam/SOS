@@ -3,28 +3,29 @@
 #include "rcc.h"
 #include "uart.h"
 
-int main() {
-    /* gpiod and gpioc clock */
-    RCC->AHB1ENR = (1u << 3u) | (1 << 2u);
+int main()
+{
+	/* gpiod and gpioc clock */
+	RCC->AHB1ENR = (1u << 3u) | (1 << 2u);
 
-    /* enable clock for USART6 */
-    RCC->APB2ENR = 0x20;
+	/* enable clock for USART6 */
+	RCC->APB2ENR = 0x20;
 
-    __asm__("nop");
+	__asm__("nop");
 
-    GPIOD->MODER = (1u << 24u) | (1u << 26u) | (1u << 28u) | (1u << 30u);
+	GPIOD->MODER = (1u << 24u) | (1u << 26u) | (1u << 28u) | (1u << 30u);
 
-    /* config 9600 baud (clk = 16MHz) */
-    UART6->BRR = (208u << 4U) | 3U;
+	/* config 9600 baud (clk = 16MHz) */
+	UART6->BRR = (208u << 4U) | 3U;
 
-    /* set over8, enable, TE, RE*/
-    UART6->CR1 = (1U << 15U) | (1U << 13U) | (1U << 3U) | (1U << 2U);
+	/* set over8, enable, TE, RE*/
+	UART6->CR1 = (1U << 15U) | (1U << 13U) | (1U << 3U) | (1U << 2U);
 
-    /* setup pin6, pin7 for alternative function mode */
-    GPIOC->MODER = (2u << 12u) | (2u << 14u);
+	/* setup pin6, pin7 for alternative function mode */
+	GPIOC->MODER = (2u << 12u) | (2u << 14u);
 
-    /* alternative function 8: USART6 */
-    GPIOC->AFRL = (8u << 24u) | (8u << 28u);
+	/* alternative function 8: USART6 */
+	GPIOC->AFRL = (8u << 24u) | (8u << 28u);
 
-    startOs();
+	startOs();
 }

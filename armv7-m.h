@@ -1,5 +1,5 @@
 __attribute__((noreturn)) void enterOs(void);
-void* initThreadStack(void* stackPtr, void* entryAddr);
-void returnToThread(void** pStackPtr, void* newStackPtr);
+void *initThreadStack(void *stackPtr, void *entryAddr);
+void returnToThread(void **pStackPtr, void *newStackPtr);
 void _sleep(uint32_t duration);
 void _startThread(uint32_t entryAddr);
