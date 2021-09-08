@@ -2,7 +2,7 @@
 
 
 
-BEGIN enterOs
+BEGIN enter_os
     /* initialize main SP */
     ldr sp, =_end_os_stack
 
@@ -25,7 +25,7 @@ BEGIN enterOs
     .LOsIdleLoop:
     wfi
     b .LOsIdleLoop
-END enterOs
+END enter_os
 
 
 
@@ -46,7 +46,7 @@ END SysTick_Handler
 
 
 
-BEGIN initThreadStack
+BEGIN init_thread_stack
     @param: stack pointer
     @param: thread entry address
     @return: initialized stack pointer
@@ -63,11 +63,11 @@ BEGIN initThreadStack
 
     bx lr
 
-END initThreadStack
+END init_thread_stack
 
 
 
-BEGIN returnToThread
+BEGIN return_to_thread
     @param: location to save current stack pointer
     @param: new thread's stack pointer
 
@@ -75,7 +75,7 @@ BEGIN returnToThread
     mrs r2, psp
     str r2, [r0]
 
-    /* restore new thread's r4-r11 (the rest is restored upon exception return) */
+    /* restore r4-r11 (the rest is restored upon exception return) */
     ldmia r1!, {r4-r11}
 
     /* load new stack pointer */
@@ -87,7 +87,7 @@ BEGIN returnToThread
     mov lr, #-3
     bx lr
 
-END returnToThread
+END return_to_thread
 
 
 
@@ -125,7 +125,7 @@ BEGIN SVC_Handler
 
     .Lservice_routine:
     .word svc_sleep
-    .word svc_startThread
+    .word svc_start_thread
 END SVC_Handler
 
 
@@ -139,8 +139,8 @@ END _sleep
 
 
 
-BEGIN _startThread
+BEGIN _start_thread
     @param entry address
     svc #1
     bx lr
-END _startThread
+END _start_thread

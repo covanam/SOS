@@ -74,11 +74,11 @@ void terminal(void)
 		get_command(buf);
 
 		if (0 == strcmp(buf, "red"))
-			startThread(blinking_red);
+			start_thread(blinking_red);
 		else if (0 == strcmp(buf, "blue"))
-			startThread(blinking_blue);
+			start_thread(blinking_blue);
 		else if (0 == strcmp(buf, "green"))
-			startThread(blinking_green);
+			start_thread(blinking_green);
 		else
 			printf("Unrecognized command: %s\n", buf);
 	}

@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-uint32_t getMsCount(void);
+uint32_t get_ms_counter(void);
 
-__attribute__((noreturn)) void startOs(void);
+__attribute__((noreturn)) void start_os(void);
 
-void startThread(void (*entryAddress)(void));
+void start_thread(void (*entryAddress)(void));
 
 void sleep(int);
 

@@ -1,61 +1,61 @@
 #include "os.h"
 #include "armv7-m.h"
 
-static uint32_t msCounter;
+static uint32_t counter_ms;
 
-enum ThreadState { ACTIVE, IDLE, SLEEP };
+enum thread_state { ACTIVE, IDLE, SLEEP };
 
-struct Thread {
-	void *stackPtr;
-	enum ThreadState state;
-	uint32_t sleepStartTime;
-	int sleepDuration;
+struct thread {
+	void *stackptr;
+	enum thread_state state;
+	uint32_t sleep_start_time;
+	int sleep_duration;
 };
 
-static int numThread = 1; // have at least the idle thread
-struct Thread threadList[50];
+static int num_thread = 1; // have at least the idle thread
+struct thread thread_list[50];
 
 void terminal(void);
 
-void startOs(void)
+void start_os(void)
 {
 	/* first thread, idle thread, is the first one to be active */
-	threadList[0].state = ACTIVE;
+	thread_list[0].state = ACTIVE;
 
-	startThread(terminal);
+	start_thread(terminal);
 
-	enterOs();
+	enter_os();
 }
 
 void OS_Handler(void)
 {
-	static int activeThread = 0;
-	msCounter++;
-	int oldThread = activeThread;
+	static int active_thread = 0;
+	counter_ms++;
+	int last_thread = active_thread;
 
 	/* wake up sleeping threads if time up */
-	for (int i = 0; i < numThread; ++i) {
-		struct Thread *pt = &threadList[i];
+	for (int i = 0; i < num_thread; ++i) {
+		struct thread *pt = &thread_list[i];
 		if (pt->state == SLEEP &&
-		    (msCounter - pt->sleepStartTime) > pt->sleepDuration)
-			threadList[i].state = IDLE;
+		    (counter_ms - pt->sleep_start_time) > pt->sleep_duration)
+			thread_list[i].state = IDLE;
 	}
 
 	/* find a new thread to run */
 	while (1) {
-		activeThread++;
-		if (activeThread == numThread)
-			activeThread = 0;
+		active_thread++;
+		if (active_thread == num_thread)
+			active_thread = 0;
 
-		struct Thread *pt = &threadList[activeThread];
+		struct thread *pt = &thread_list[active_thread];
 
 		if (pt->state == SLEEP) {
 			continue;
 		} else if (pt->state == IDLE) {
 			break;
-		} else if (activeThread == oldThread) {
+		} else if (active_thread == last_thread) {
 			if (pt->state == SLEEP) {
-				activeThread = 0;
+				active_thread = 0;
 			}
 			break;
 		} else {
@@ -63,14 +63,14 @@ void OS_Handler(void)
 		}
 	}
 
-	if (activeThread != oldThread) {
-		if (threadList[oldThread].state == ACTIVE)
-			threadList[oldThread].state = IDLE;
+	if (active_thread != last_thread) {
+		if (thread_list[last_thread].state == ACTIVE)
+			thread_list[last_thread].state = IDLE;
 
-		threadList[activeThread].state = ACTIVE;
+		thread_list[active_thread].state = ACTIVE;
 
-		returnToThread(&threadList[oldThread].stackPtr,
-			       threadList[activeThread].stackPtr);
+		return_to_thread(&thread_list[last_thread].stackptr,
+				 thread_list[active_thread].stackptr);
 	}
 }
 
@@ -81,44 +81,44 @@ void sleep(int duration)
 
 void svc_sleep(uint32_t duration)
 {
-	for (int i = 0; i < numThread; ++i) {
-		if (threadList[i].state == ACTIVE) {
-			threadList[i].state = SLEEP;
-			threadList[i].sleepStartTime = msCounter;
-			threadList[i].sleepDuration = (int)duration;
+	for (int i = 0; i < num_thread; ++i) {
+		if (thread_list[i].state == ACTIVE) {
+			thread_list[i].state = SLEEP;
+			thread_list[i].sleep_start_time = counter_ms;
+			thread_list[i].sleep_duration = (int)duration;
 			break;
 		}
 	}
 }
 
-uint32_t getMsCount(void)
+uint32_t get_ms_counter(void)
 {
-	return msCounter;
+	return counter_ms;
 }
 
 #define STACKSIZE 1024u
 extern char _procstack[];
 
-void startThread(void (*entryAddr)(void))
+void start_thread(void (*addr)(void))
 {
-	_startThread((uint32_t)entryAddr);
+	_start_thread((uint32_t)addr);
 }
 
-void svc_startThread(void (*entryAddr)(void))
+void svc_start_thread(void (*addr)(void))
 {
 	static int free_stack_slot = 0;
 	static int free_thread_slot = 1; // first slot is for idle thread
 
 	void *stack = _procstack - free_stack_slot * STACKSIZE;
 
-	stack = initThreadStack(stack, entryAddr);
+	stack = init_thread_stack(stack, addr);
 
 	free_stack_slot++;
 
-	threadList[free_thread_slot].stackPtr = stack;
-	threadList[free_thread_slot].state = IDLE;
+	thread_list[free_thread_slot].stackptr = stack;
+	thread_list[free_thread_slot].state = IDLE;
 
 	free_thread_slot++;
 
-	numThread++;
+	num_thread++;
 }

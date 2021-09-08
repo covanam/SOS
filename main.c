@@ -27,5 +27,5 @@ int main()
 	/* alternative function 8: USART6 */
 	GPIOC->AFRL = (8u << 24u) | (8u << 28u);
 
-	startOs();
+	start_os();
 }
