@@ -12,12 +12,27 @@ int putchar(int c) {
 }
 
 int getchar(void) {
+    static int line_pointer = 0;
+
 	char c = uart_read(UART6);
 
-	/* putty send '\r' when Enter is pressed */
-	if (c == '\r') c = '\n';
+    /* putty sends '\r' when Enter is pressed, we want Enter means '\n' */
+    if (c == '\r')
+        c = '\n';
 
-	putchar(c);
+    if (c != '\x7f' || line_pointer > 0)
+	    putchar(c);
+
+	if (c == '\n') {
+        line_pointer = 0;
+    }
+    else if (c == '\x7f') {
+        if (line_pointer > 0)
+            line_pointer--;
+    }
+    else {
+        line_pointer++;
+    }
 
     return c;
 }
@@ -29,34 +44,40 @@ int strcmp(const char* s1, const char* s2)
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
 
+void get_command(char* buf) {
+    char c;
+    char *pbuf = buf;
+    while (c = getchar(), c != '\n') {
+        if (c != '\x7f') {
+            *(pbuf++) = c;
+        }
+        else {
+            if (pbuf != buf) {
+                --pbuf;
+            }
+        }
+    }
+    *pbuf = '\0';
+}
+
 void terminal(void) {
     char buf[20];
-    char *pbuf = buf;
 
     printf("\r\nWelcome to Simple operating system\n");
     printf("Compiled on " __DATE__ " at " __TIME__ "\n");
 
     while (1) {
-        char c;
+        printf(">>> ");
 
-        c = getchar();
+        get_command(buf);
 
-        if (c != '\n') {
-            *(pbuf++) = c;
-        }
-        else {
-            *pbuf = '\0';
-            pbuf = buf;
-
-            if (0 == strcmp(buf, "red"))
-                startThread(blinking_red);
-            else if (0 == strcmp(buf, "blue"))
-                startThread(blinking_blue);
-            else if (0 == strcmp(buf, "green"))
-                startThread(blinking_green);
-            else {
-                printf("Unrecognized command: %s\r\n", buf);
-            }
-        }
+        if (0 == strcmp(buf, "red"))
+            startThread(blinking_red);
+        else if (0 == strcmp(buf, "blue"))
+            startThread(blinking_blue);
+        else if (0 == strcmp(buf, "green"))
+            startThread(blinking_green);
+        else
+            printf("Unrecognized command: %s\n", buf);
     }
 }
