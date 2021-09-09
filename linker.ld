@@ -53,11 +53,11 @@ SECTIONS
         _end_os_stack = .;
     } >RAM
 
-    .procstack :
-    {
-        . = ALIGN(8);
-        /* 10 KB for process stack*/
-        . = . + 51200;
-        _procstack = .;
+    .osheap :
+    {   
+        /* 50k for OS heap */
+        _start_os_heap = .;
+        . = . + 50K;
+        _end_os_heap = .;
     } >RAM
 }
