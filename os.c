@@ -49,8 +49,13 @@ static struct thread *scheduler(void) {
 	return n;
 }
 
-void OS_Handler(void)
+struct OS_Handler_return {
+	void **sp_save_addr;
+	void *new_sp;
+} OS_Handler(void)
 {
+	struct OS_Handler_return ret;
+
 	counter_ms++;
 
 	for (struct thread *p = head_thread(); p != NULL; p = next_thread(p)) {
@@ -62,22 +67,25 @@ void OS_Handler(void)
 	struct thread *new_thread = scheduler();
 
 	if (new_thread != last_active_thread) {
-		void **last_sp;
 		if (last_active_thread != NULL) {
 			if (last_active_thread->state != SLEEP)
 				last_active_thread->state = IDLE;
-			
-			last_sp = &last_active_thread->stackptr;
+			ret.sp_save_addr = &last_active_thread->stackptr;
 		} else {
-			last_sp = NULL;
+			ret.sp_save_addr = NULL;
 		}
 
+		ret.new_sp = new_thread->stackptr;
 		new_thread->state = ACTIVE;
 
 		last_active_thread = new_thread;
-
-		return_to_thread(last_sp, new_thread->stackptr);
 	}
+	else {
+		ret.new_sp = NULL;
+		ret.sp_save_addr = NULL;
+	}
+
+	return ret;
 }
 
 void sleep(int duration)

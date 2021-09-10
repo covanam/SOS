@@ -30,15 +30,23 @@ END enter_os
 
 
 BEGIN SysTick_Handler
-    mrs r0, psp
-    stmdb r0!, {r4-r11}
-    msr psp, r0
-
+    sub sp, #8
+    mov r0, sp
     bl OS_Handler
+    pop {r0, r1}
 
-    mrs r0, psp
-    add r0, #32
-    msr psp, r0
+    /* save current context, unless sp_save_addr==NULL */
+    cmp r0, #0
+    ittt ne
+    mrsne r2, psp
+    stmdbne r2!, {r4-r11}
+    strne r2, [r0]
+
+    /* restore new context, unless new_sp==NULL */
+    cmp r1, #0
+    itt ne
+    ldmiane r1!, {r4-r11}
+    msrne psp, r1
 
     mov lr, #-3
     bx lr
@@ -69,32 +77,6 @@ BEGIN init_thread_stack
     bx lr
 
 END init_thread_stack
-
-
-
-BEGIN return_to_thread
-    @param: location to save current stack pointer
-    @param: new thread's stack pointer
-
-    /* save current stack pointer */
-    cmp r0, #0
-    itt ne
-    mrsne r2, psp
-    strne r2, [r0]
-
-    /* restore r4-r11 (the rest is restored upon exception return) */
-    ldmia r1!, {r4-r11}
-
-    /* load new stack pointer */
-    msr psp, r1
-
-    /* reset main stack pointer to initial value */
-    ldr sp, =_end_os_stack
-
-    mov lr, #-3
-    bx lr
-
-END return_to_thread
 
 
 
