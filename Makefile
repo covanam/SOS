@@ -1,36 +1,36 @@
-# source files
-SRCS=main.c gpio.c rcc.c os.c armv7-m.s uart.c startup.c terminal.c apps.c\
-     printf.c thread_list.c memory.c
-
-# Binaries will be generated with this name (.elf, .bin, .hex)
-PROJ_NAME=sos
-
 # Compiler settings. Only edit CFLAGS to include other header files.
 CC=arm-none-eabi-gcc
+AS=arm-none-eabi-as
+LD=arm-none-eabi-ld
 OBJCOPY=arm-none-eabi-objcopy
 
 # Compiler flags
-CFLAGS  = -Wall -Werror -Tlinker.ld
+CFLAGS  = -Wall -Werror
 CFLAGS += -mthumb -march=armv7-m
-CFLAGS += -nostdlib -ffreestanding
+CFLAGS += -ffreestanding
+CFLAGS += -Iapps -Ios -Iperip
 
-# object files
-OBJS = $(SRCS:.c=.o)
+# Assembler flags
+ASFLAGS = -Ios
 
-.PHONY: proj
+# Linker options
+LDFLAGS = -nostdlib -Tlinker.ld
 
-all: proj
+vpath %.c apps os perip startup stdlib
+vpath %.s os
+vpath %.h apps os perip
 
-proj: $(PROJ_NAME).elf
+all: sos.elf
+	$(OBJCOPY) -O ihex sos.elf sos.hex
+	$(OBJCOPY) -O binary sos.elf sos.bin
 
-$(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@
-	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
-	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
+sos.elf: startup.o main.o gpio.o rcc.o uart.o os.o apps.o terminal.o armv7-m.o
+sos.elf: printf.o memory.o thread_list.o
+	$(LD) $(LDFLAGS) $^ -o sos.elf
 
 clean:
-	rm -f *.o $(PROJ_NAME).elf $(PROJ_NAME).hex $(PROJ_NAME).bin
+	rm -f *.o sos.elf sos.hex sos.bin
 
 # Flash the STM32F4
 flash:
-	st-flash --reset write $(PROJ_NAME).bin 0x08000000
+	st-flash --reset write sos.bin 0x08000000
