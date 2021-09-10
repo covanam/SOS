@@ -145,6 +145,9 @@ void *malloc(size_t nbytes)
 //
 void free(void *ap)
 {
+	if (ap == NULL)
+		return;
+
 	mem_header_t *block;
 	mem_header_t *p;
 

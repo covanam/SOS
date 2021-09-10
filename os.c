@@ -24,6 +24,31 @@ void start_os(void)
 	enter_os();
 }
 
+static struct thread *get_next_idle_thread(struct thread *t) {
+	while (1) {
+		t = next_thread(t);
+
+		if (t == NULL)
+			t = head_thread();
+
+		if (t->state != SLEEP)
+			break;
+	}
+
+	return t;
+}
+
+static struct thread *scheduler(void) {
+	struct thread *n;
+
+	if (last_active_thread == NULL)
+		n = head_thread();
+	else
+		n = get_next_idle_thread(last_active_thread);
+	
+	return n;
+}
+
 void OS_Handler(void)
 {
 	counter_ms++;
@@ -34,25 +59,20 @@ void OS_Handler(void)
 			p->state = IDLE;
 	}
 
-	struct thread *new_thread = next_thread(last_active_thread);
-
-	while (1) {
-		if (new_thread == NULL)
-			new_thread = head_thread();
-
-		if (new_thread->state != SLEEP)
-			break;
-
-		new_thread = next_thread(new_thread);
-	}
+	struct thread *new_thread = scheduler();
 
 	if (new_thread != last_active_thread) {
-		if (last_active_thread->state == ACTIVE)
-			last_active_thread->state = IDLE;
+		void **last_sp;
+		if (last_active_thread != NULL) {
+			if (last_active_thread->state != SLEEP)
+				last_active_thread->state = IDLE;
+			
+			last_sp = &last_active_thread->stackptr;
+		} else {
+			last_sp = NULL;
+		}
 
 		new_thread->state = ACTIVE;
-
-		void **last_sp = &last_active_thread->stackptr;
 
 		last_active_thread = new_thread;
 
@@ -97,8 +117,10 @@ static void *align8(void *ptr)
 void svc_start_thread(void (*addr)(void))
 {
 	struct thread thr;
-	void *stack = malloc(THREAD_STACK_SIZE) + THREAD_STACK_SIZE;
-	stack = align8(stack);
+	void *stack = malloc(THREAD_STACK_SIZE);
+	thr.stack_start = stack;
+
+	stack = align8(stack + THREAD_STACK_SIZE);
 
 	stack = init_thread_stack(stack, addr);
 
@@ -106,4 +128,10 @@ void svc_start_thread(void (*addr)(void))
 	thr.state = IDLE;
 
 	insert_thread(thr);
+}
+
+void svc_end_thread(void) {
+	free(last_active_thread->stack_start);
+	remove_thread(last_active_thread);
+	last_active_thread = NULL;
 }

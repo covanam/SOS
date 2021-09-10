@@ -79,6 +79,8 @@ void terminal(void)
 			start_thread(blinking_blue);
 		else if (0 == strcmp(buf, "green"))
 			start_thread(blinking_green);
+		else if (0 == strcmp(buf, "orange"))
+			start_thread(toggle_orange);
 		else
 			printf("Unrecognized command: %s\n", buf);
 	}

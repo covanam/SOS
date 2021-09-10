@@ -61,6 +61,11 @@ BEGIN init_thread_stack
     lsl r2, r2, #24
     str r2, [r0, #60]
 
+    /* initialize LR with _end_thread */
+    ldr r3, =_end_thread
+    orr r3, #1
+    str r3, [r0, #52]
+
     bx lr
 
 END init_thread_stack
@@ -72,8 +77,10 @@ BEGIN return_to_thread
     @param: new thread's stack pointer
 
     /* save current stack pointer */
-    mrs r2, psp
-    str r2, [r0]
+    cmp r0, #0
+    itt ne
+    mrsne r2, psp
+    strne r2, [r0]
 
     /* restore r4-r11 (the rest is restored upon exception return) */
     ldmia r1!, {r4-r11}
@@ -124,6 +131,7 @@ BEGIN SVC_Handler
     .Lservice_routine:
     .word svc_sleep
     .word svc_start_thread
+    .word svc_end_thread
 END SVC_Handler
 
 
@@ -142,3 +150,11 @@ BEGIN _start_thread
     svc #1
     bx lr
 END _start_thread
+
+
+
+LOCAL _end_thread
+    svc #2
+    .Letl: wfi
+    b .Letl
+END _end_thread

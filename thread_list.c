@@ -23,6 +23,33 @@ int insert_thread(struct thread t)
 	return nnode != NULL;
 }
 
+int remove_thread(struct thread *t) {
+	int ret = 0;
+
+	struct node *before = NULL;
+	struct node *remove = NULL;
+
+	for (struct node *n = head; n != NULL; n = n->next) {
+		if (&n->thread == t) {
+			remove = n;
+			break;
+		}
+		before = n;
+	}
+
+	if (remove == head) {
+		head = remove->next;
+	} else if (remove != NULL) {
+		before->next = remove->next;
+	}
+	else {
+		ret = 1;
+	}
+
+	free(remove);
+	return ret;
+}
+
 struct thread *head_thread(void)
 {
 	return &head->thread;

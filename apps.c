@@ -30,3 +30,8 @@ void blinking_red(void)
 		sleep(300);
 	}
 }
+
+void toggle_orange(void)
+{
+	GPIOD->ODR ^= (1u << 13u);
+}
