@@ -61,11 +61,24 @@ void get_command(char *buf)
 	*pbuf = '\0';
 }
 
+static const struct app *find_app(const char *name) {
+	const struct app *ret = NULL;
+
+	for (const struct app *a = app_list; a->name != NULL; ++a) {
+		if (0 == strcmp(a->name, name)) {
+			ret = a;
+			break;
+		}
+	}
+
+	return ret;
+}
+
 void terminal(void)
 {
 	char buf[20];
 
-	printf("\r\nWelcome to Simple operating system\n");
+	printf("\nWelcome to Simple operating system\n");
 	printf("Compiled on " __DATE__ " at " __TIME__ "\n");
 
 	while (1) {
@@ -73,14 +86,10 @@ void terminal(void)
 
 		get_command(buf);
 
-		if (0 == strcmp(buf, "red"))
-			start_thread(blinking_red);
-		else if (0 == strcmp(buf, "blue"))
-			start_thread(blinking_blue);
-		else if (0 == strcmp(buf, "green"))
-			start_thread(blinking_green);
-		else if (0 == strcmp(buf, "orange"))
-			start_thread(toggle_orange);
+		const struct app *a = find_app(buf);
+
+		if (a != NULL)
+			start_thread(a->entry);
 		else
 			printf("Unrecognized command: %s\n", buf);
 	}

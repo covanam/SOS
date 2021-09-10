@@ -1,6 +1,8 @@
 #include "gpio.h"
 #include "os.h"
 #include <stdint.h>
+#include "apps.h"
+#include <stddef.h>
 
 void toggle_green(void)
 {
@@ -35,3 +37,26 @@ void toggle_orange(void)
 {
 	GPIOD->ODR ^= (1u << 13u);
 }
+
+const struct app app_list[] = {
+	{
+		.name = "green",
+		.entry = blinking_green,
+	},
+	{
+		.name = "blue",
+		.entry = blinking_blue,
+	},
+	{
+		.name = "red",
+		.entry = blinking_red,
+	},
+	{
+		.name = "orange",
+		.entry = toggle_orange,
+	},
+	{
+		NULL,
+		NULL,
+	},
+};

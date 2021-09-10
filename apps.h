@@ -1,9 +1,11 @@
 #ifndef APPS_H
 #define APPS_H
 
-void blinking_green(void);
-void blinking_blue(void);
-void blinking_red(void);
-void toggle_orange(void);
+struct app {
+        const char *name;
+        void *entry;
+};
+
+extern const struct app app_list[];
 
 #endif /* APPS_H */
