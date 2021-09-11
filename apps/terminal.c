@@ -1,4 +1,4 @@
-#include "os.h"
+#include "thread.h"
 #include "apps.h"
 #include <stdio.h>
 #include "uart.h"

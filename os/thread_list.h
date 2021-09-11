@@ -1,15 +1,7 @@
 #ifndef THREAD_LIST_H
 #define THREAD_LIST_H
 
-enum thread_state { ACTIVE, IDLE, SLEEP };
-
-struct thread {
-	void *stack_start;
-	void *stackptr;
-	enum thread_state state;
-	uint32_t sleep_start_time;
-	int sleep_duration;
-};
+#include "thread.h"
 
 int insert_thread(struct thread t);
 struct thread *head_thread(void);
