@@ -7,8 +7,6 @@ uint32_t get_ms_counter(void);
 
 __attribute__((noreturn)) void start_os(void);
 
-void start_thread(void (*entryAddress)(void));
-
 void sleep(int);
 
 #endif
