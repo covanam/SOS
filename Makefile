@@ -25,7 +25,7 @@ all: sos.elf
 	$(OBJCOPY) -O binary sos.elf sos.bin
 
 sos.elf: startup.o main.o gpio.o rcc.o uart.o os.o apps.o terminal.o armv7-m.o
-sos.elf: printf.o memory.o thread_list.o
+sos.elf: printf.o memory.o thread_list.o mutex.o
 	$(LD) $(LDFLAGS) $^ -o sos.elf
 
 clean:
