@@ -104,11 +104,6 @@ void svc_sleep(uint32_t duration)
 	}
 }
 
-uint32_t get_ms_counter(void)
-{
-	return counter_ms;
-}
-
 void svc_end_thread(void) {
 	free(last_active_thread->stack_start);
 	remove_thread(last_active_thread);
