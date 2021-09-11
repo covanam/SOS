@@ -5,7 +5,7 @@ LD=arm-none-eabi-ld
 OBJCOPY=arm-none-eabi-objcopy
 
 # Compiler flags
-CFLAGS  = -Wall -Werror
+CFLAGS  = -Wall -Wextra -Werror
 CFLAGS += -mthumb -march=armv7-m
 CFLAGS += -ffreestanding
 CFLAGS += -Iapps -Ios -Iperip

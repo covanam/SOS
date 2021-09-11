@@ -5,6 +5,6 @@
 
 __attribute__((noreturn)) void start_os(void);
 
-void sleep(int);
+void sleep(unsigned int);
 
 #endif

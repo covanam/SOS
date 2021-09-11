@@ -14,7 +14,7 @@ struct thread {
 	void *stackptr;
 	enum thread_state state;
 	uint32_t sleep_start_time;
-	int sleep_duration;
+	unsigned int sleep_duration;
 	struct thread_handle *handle;
 };
 

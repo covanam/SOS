@@ -87,7 +87,7 @@ struct OS_Handler_return {
 	return ret;
 }
 
-void sleep(int duration)
+void sleep(unsigned int duration)
 {
 	_sleep((uint32_t)duration);
 }

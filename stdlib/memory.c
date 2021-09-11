@@ -41,7 +41,7 @@ static mem_header_t *freep = 0;
 extern uint8_t _start_os_heap[];
 extern uint8_t _end_os_heap[];
 static const uint8_t *const pool = &_start_os_heap[0];
-#define POOL_SIZE (&_end_os_heap[0] - &_start_os_heap[0])
+#define POOL_SIZE (size_t)(&_end_os_heap[0] - &_start_os_heap[0])
 static size_t pool_free_pos = 0;
 
 void memmgr_init()
