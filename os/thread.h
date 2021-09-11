@@ -15,8 +15,11 @@ struct thread {
 	enum thread_state state;
 	uint32_t sleep_start_time;
 	int sleep_duration;
+	struct thread_handle *handle;
 };
 
-void start_thread(void (*entryAddress)(void));
+struct thread_handle *start_thread(void (*entryAddress)(void));
+void wait_thread(struct thread_handle*);
+void detach_thread(struct thread_handle*);
 
 #endif

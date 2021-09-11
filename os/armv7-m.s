@@ -104,9 +104,15 @@ BEGIN SVC_Handler
     ldr r0, [r0]
 
     /* call svc function */
-    push {lr}
+    push {r1, lr}
     blx r1
-    pop {lr}
+    pop {r1, lr}
+
+    /* in start_thread case, return value is passed back via r4*/
+    ldr r2, =svc_start_thread
+    cmp r2, r1
+    it eq
+    moveq r4, r0
 
     bx lr
 
@@ -129,7 +135,11 @@ END _sleep
 
 BEGIN _start_thread
     @param entry address
+    /* return value from SVC in r4 */
+    push {r4}
     svc #1
+    mov r0, r4
+    pop {r4}
     bx lr
 END _start_thread
 

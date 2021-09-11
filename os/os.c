@@ -18,7 +18,7 @@ void start_os(void)
 	insert_thread(thr);
 	last_active_thread = head_thread();
 
-	start_thread(terminal);
+	detach_thread(start_thread(terminal));
 
 	enter_os();
 }
@@ -105,6 +105,7 @@ void svc_sleep(uint32_t duration)
 }
 
 void svc_end_thread(void) {
+	last_active_thread->handle->done = 1;
 	free(last_active_thread->stack_start);
 	remove_thread(last_active_thread);
 	last_active_thread = NULL;

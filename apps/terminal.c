@@ -45,6 +45,18 @@ int strcmp(const char *s1, const char *s2)
 	return *(const unsigned char *)s1 - *(const unsigned char *)s2;
 }
 
+int memcmp(const void *ptr1, const void *ptr2, size_t num)
+{
+	const char *p1 = ptr1;
+	const char *p2 = ptr2; 
+	while (num--) {
+		if (*p1 != *p2)
+			return 1;
+		p1++, p2++;
+	}
+	return 0;
+}
+
 void get_command(char *buf)
 {
 	char c;
@@ -76,7 +88,7 @@ static const struct app *find_app(const char *name) {
 
 void terminal(void)
 {
-	char buf[20];
+	char buf[50];
 
 	printf("\nWelcome to Simple operating system\n");
 	printf("Compiled on " __DATE__ " at " __TIME__ "\n");
@@ -84,12 +96,24 @@ void terminal(void)
 	while (1) {
 		printf(">>> ");
 
+		int detach;
+		const struct app *a;
+
 		get_command(buf);
 
-		const struct app *a = find_app(buf);
+		if (0 == memcmp("detach ", buf, 7)) {
+			a = find_app(buf + 7);
+			detach = 1;
+		} else {
+			a = find_app(buf);
+			detach = 0;
+		}
 
-		if (a != NULL)
-			start_thread(a->entry);
+		if (a != NULL) {
+			struct thread_handle *h = start_thread(a->entry);
+			if (detach) detach_thread(h);
+			else wait_thread(h);
+		}
 		else
 			printf("Unrecognized command: %s\n", buf);
 	}
