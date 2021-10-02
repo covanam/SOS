@@ -38,18 +38,19 @@ static mem_header_t *freep = 0;
 
 // Static pool for new allocations
 //
-extern uint8_t _start_os_heap[];
-extern uint8_t _end_os_heap[];
-static const uint8_t *const pool = &_start_os_heap[0];
-#define POOL_SIZE (size_t)(&_end_os_heap[0] - &_start_os_heap[0])
+static uint8_t *pool;
+static size_t pool_size;
 static size_t pool_free_pos = 0;
 
-void memmgr_init()
+void init_malloc(void* heap_start, size_t heap_size)
 {
 	base.s.next = 0;
 	base.s.size = 0;
 	freep = 0;
 	pool_free_pos = 0;
+
+	pool = heap_start;
+	pool_size = heap_size;
 }
 
 static mem_header_t *get_mem_from_pool(size_t nquantas)
@@ -63,7 +64,7 @@ static mem_header_t *get_mem_from_pool(size_t nquantas)
 
 	total_req_size = nquantas * sizeof(mem_header_t);
 
-	if (pool_free_pos + total_req_size <= POOL_SIZE) {
+	if (pool_free_pos + total_req_size <= pool_size) {
 		h = (mem_header_t *)(pool + pool_free_pos);
 		h->s.size = nquantas;
 		free((void *)(h + 1));

@@ -3,10 +3,9 @@
 #include "thread_list.h"
 #include <stdlib.h>
 #include "thread.h"
+#include "proc.h"
 
 static uint32_t counter_ms;
-
-void terminal(void);
 
 static struct thread *last_active_thread;
 
@@ -18,7 +17,7 @@ void start_os(void)
 	insert_thread(thr);
 	last_active_thread = head_thread();
 
-	detach_thread(start_thread(terminal));
+	start_process((void*)0x08001000);
 
 	enter_os();
 }

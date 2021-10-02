@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 
 extern uint8_t _estack; // end of ram
 extern uint8_t _sidata; // init address of the .data section
@@ -8,6 +9,10 @@ extern uint8_t _sbss; // start address of the .bss section
 extern uint8_t _ebss; // end address of the .bss section
 
 int main(void); // may not match the function's real signature, but does not matter
+
+extern uint8_t _start_os_heap[];
+extern uint8_t _end_os_heap[];
+void init_malloc(void* heap_start, size_t heap_size);
 
 static void init_data_section(void)
 {
@@ -36,6 +41,8 @@ __attribute__((naked)) void Reset_Handler(void)
 	init_data_section();
 
 	init_bss_section();
+
+	init_malloc(_start_os_heap, _end_os_heap - _start_os_heap);
 
 	main();
 }
