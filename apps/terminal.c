@@ -1,42 +1,7 @@
-#include "thread.h"
+// #include "thread.h"
 #include "apps.h"
 #include <stdio.h>
 #include "uart.h"
-
-int putchar(int c)
-{
-	uart_write(UART6, (char)c);
-
-	if (c == '\n')
-		uart_write(UART6, '\r');
-
-	return c;
-}
-
-int getchar(void)
-{
-	static int line_pointer = 0;
-
-	char c = uart_read(UART6);
-
-	/* putty sends '\r' when Enter is pressed, we want Enter means '\n' */
-	if (c == '\r')
-		c = '\n';
-
-	if (c != '\x7f' || line_pointer > 0)
-		putchar(c);
-
-	if (c == '\n') {
-		line_pointer = 0;
-	} else if (c == '\x7f') {
-		if (line_pointer > 0)
-			line_pointer--;
-	} else {
-		line_pointer++;
-	}
-
-	return c;
-}
 
 int strcmp(const char *s1, const char *s2)
 {
@@ -73,6 +38,14 @@ void get_command(char *buf)
 	*pbuf = '\0';
 }
 
+const struct app app_list[] = {
+	{
+		NULL,
+		NULL,
+	},
+};
+
+
 static const struct app *find_app(const char *name) {
 	const struct app *ret = NULL;
 
@@ -86,7 +59,7 @@ static const struct app *find_app(const char *name) {
 	return ret;
 }
 
-void terminal(void)
+int main(void)
 {
 	char buf[50];
 
@@ -110,9 +83,14 @@ void terminal(void)
 		}
 
 		if (a != NULL) {
-			struct thread_handle *h = start_thread(a->entry);
+			// struct thread_handle *h = start_thread(a->entry);
+
+			/* TODO: re-enable this
 			if (detach) detach_thread(h);
 			else wait_thread(h);
+			*/
+			/* suppress build warning for now... */
+			(void)detach;
 		}
 		else
 			printf("Unrecognized command: %s\n", buf);
