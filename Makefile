@@ -22,13 +22,14 @@ vpath %.h os perip
 
 all: sos.elf
 	$(OBJCOPY) -O ihex sos.elf sos.hex
+	$(OBJCOPY) -O binary sos.elf sos.bin
 
 sos.elf: startup.o main.o gpio.o rcc.o uart.o os.o armv7-m.o proc.o string.o
 sos.elf: memory.o thread_list.o mutex.o thread.o
 	$(LD) $(LDFLAGS) $^ -o sos.elf
 
 clean:
-	rm -f *.o sos.elf
+	rm -f *.o sos.elf sos.hex sos.bin
 
 # Flash the STM32F4
 flash:

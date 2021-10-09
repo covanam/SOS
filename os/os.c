@@ -17,7 +17,8 @@ void start_os(void)
 	insert_thread(thr);
 	last_active_thread = head_thread();
 
-	start_process((void*)0x08001000);
+	extern uint32_t _start_app[];
+	start_process((void*)_start_app);
 
 	enter_os();
 }

@@ -1,10 +1,6 @@
-/* Entry Point */
-ENTRY(main)
-
-/* Specify the memory areas */
 MEMORY
 {
-    RAM (rw) : ORIGIN = 0x08001000, LENGTH = 128K
+	RAM (rw) : ORIGIN = 0, LENGTH = 128K
 }
 
 SECTIONS
@@ -17,6 +13,7 @@ SECTIONS
 	.text :
 	{
 		*(.text)
+		*(.text.startup)
 	} >RAM
 
 	.rodata :
@@ -34,5 +31,13 @@ SECTIONS
 		*(.bss)
 	} >RAM
 
-	_program_size = . - 0x08001000;
+	.got :
+	{
+		*(.got.plt)
+	} >RAM
+
+	_program_size = .;
+
+	_got_start = ADDR(.got);
+	_got_size = SIZEOF(.got);
 }

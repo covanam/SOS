@@ -60,4 +60,9 @@ SECTIONS
         . = . + 50K;
         _end_os_heap = .;
     } >RAM
+
+    .size_calculate :
+    {
+        _start_app = .;
+    } >FLASH
 }
