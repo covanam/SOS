@@ -1,4 +1,4 @@
-// #include "thread.h"
+#include "thread.h"
 #include "apps.h"
 #include <stdio.h>
 #include "uart.h"
@@ -38,14 +38,6 @@ void get_command(char *buf)
 	*pbuf = '\0';
 }
 
-const struct app app_list[] = {
-	{
-		NULL,
-		NULL,
-	},
-};
-
-
 static const struct app *find_app(const char *name) {
 	const struct app *ret = NULL;
 
@@ -83,7 +75,7 @@ int main(void)
 		}
 
 		if (a != NULL) {
-			// struct thread_handle *h = start_thread(a->entry);
+			start_thread(a->entry);
 
 			/* TODO: re-enable this
 			if (detach) detach_thread(h);

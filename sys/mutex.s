@@ -1,4 +1,4 @@
-.include "asm.h"
+.include "../sys/asm.h"
 
 
 

@@ -87,11 +87,6 @@ struct OS_Handler_return {
 	return ret;
 }
 
-void sleep(unsigned int duration)
-{
-	_sleep((uint32_t)duration);
-}
-
 void svc_sleep(uint32_t duration)
 {
 	for (struct thread *p = head_thread(); p != NULL; p = next_thread(p)) {

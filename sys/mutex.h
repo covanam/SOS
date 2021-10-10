@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 struct mutex {
-        uint8_t is_locked;
+	uint8_t is_locked;
 };
 
 void mutex_init(struct mutex *m);

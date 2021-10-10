@@ -1,5 +1,5 @@
 #include "gpio.h"
-#include "os.h"
+#include "sos.h"
 #include <stdint.h>
 #include "apps.h"
 #include <stddef.h>

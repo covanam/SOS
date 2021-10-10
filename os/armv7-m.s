@@ -124,15 +124,6 @@ END SVC_Handler
 
 
 
-BEGIN _sleep
-    @param duration
-    svc #0
-    wfi
-    bx lr
-END _sleep
-
-
-
 BEGIN _start_thread
     @param entry address
     /* return value from SVC in r4 */

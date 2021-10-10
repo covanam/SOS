@@ -21,7 +21,7 @@ static void *load_program_to_ram(void *addr)
 
 	void **p = ram_header->got_start;
 	for (size_t i = 0; i < ram_header->got_size / sizeof(void *); i++)
-		p[i] += offset;
+		if (p[i] != NULL) p[i] += offset;
 
 	return ram_header;
 }

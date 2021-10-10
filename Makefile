@@ -25,12 +25,8 @@ all: sos.elf
 	$(OBJCOPY) -O binary sos.elf sos.bin
 
 sos.elf: startup.o main.o gpio.o rcc.o uart.o os.o armv7-m.o proc.o string.o
-sos.elf: memory.o thread_list.o mutex.o thread.o
+sos.elf: memory.o thread_list.o thread.o
 	$(LD) $(LDFLAGS) $^ -o sos.elf
 
 clean:
 	rm -f *.o sos.elf sos.hex sos.bin
-
-# Flash the STM32F4
-flash:
-	st-flash --reset write sos.bin 0x08000000
