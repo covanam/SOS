@@ -81,38 +81,36 @@ END init_thread_stack
 
 
 BEGIN SVC_Handler
+    /* note: r0-r3 must be preserved as they are passed to the svc functions */
+
+    push {r4-r6, lr}
+
     /* get interrupt stack (check LR to see if it's MSP or PSP) */
     cmp lr, #-3
     ite eq
-    mrseq r0, psp
-    movne.n r0, sp
+    mrseq r4, psp
+    addne r4, sp, #16
 
     /* retrive the svc instruction's encoding */
-    ldr r1, [r0, #0x18]
-    sub r1, #2
-    ldrh r1, [r1]
+    ldr r5, [r4, #0x18]
+    sub r5, #2
+    ldrh r5, [r5]
 
     /* get svc number */
-    and r1, #0xff
+    and r5, #0xff
 
     /* get the svc function address to run */
-    ldr r2, =.Lservice_routine
-    lsl r1, #2
-    ldr r1, [r2, r1]
-
-    /* pass original argument to svc function */
-    ldr r0, [r0]
+    ldr r6, =.Lservice_routine
+    lsl r5, #2
+    ldr r5, [r6, r5]
 
     /* call svc function */
-    push {r1, lr}
-    blx r1
-    pop {r1, lr}
+    blx r5
 
-    /* in start_thread case, return value is passed back via r4*/
-    ldr r2, =svc_start_thread
-    cmp r2, r1
-    it eq
-    moveq r4, r0
+    /* return value */
+    str r0, [r4]
+
+    pop {r4-r6, lr}
 
     bx lr
 
@@ -126,11 +124,7 @@ END SVC_Handler
 
 BEGIN _start_thread
     @param entry address
-    /* return value from SVC in r4 */
-    push {r4}
     svc #1
-    mov r0, r4
-    pop {r4}
     bx lr
 END _start_thread
 
