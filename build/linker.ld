@@ -28,11 +28,6 @@ SECTIONS
 		*(.data)
 	} >RAM
 
-	.bss :
-	{
-		*(.bss)
-	} >RAM
-
 	.got :
 	{
 		*(.got)
@@ -40,10 +35,20 @@ SECTIONS
 		*(.data.rel.ro.local)
 	} >RAM
 
-	_program_size = .;
+	_flash_size = .;
+
+	.bss (NOLOAD):
+	{
+		*(.bss)
+	} >RAM
+
+	_total_size = .;
 
 	_got_start = ADDR(.got);
 	_got_size = SIZEOF(.got);
+
+	_bss_start = ADDR(.bss);
+	_bss_size = SIZEOF(.bss);
 
 	/DISCARD/ :
 	{
