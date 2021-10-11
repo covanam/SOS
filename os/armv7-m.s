@@ -69,12 +69,17 @@ BEGIN init_thread_stack
     lsl r2, r2, #24
     str r2, [r0, #60]
 
-    /* initialize LR with _end_thread */
-    ldr r3, =_end_thread
+    /* initialize LR with thread end code */
+    ldr r3, =.Lthread_end_code
     orr r3, #1
     str r3, [r0, #52]
 
     bx lr
+
+    .Lthread_end_code:
+    svc #2
+    .Letl: wfi
+    b .Letl
 
 END init_thread_stack
 
@@ -115,23 +120,7 @@ BEGIN SVC_Handler
     bx lr
 
     .Lservice_routine:
-    .word svc_sleep
-    .word svc_start_thread
-    .word svc_end_thread
+    .word sleep
+    .word start_thread
+    .word end_thread
 END SVC_Handler
-
-
-
-BEGIN _start_thread
-    @param entry address
-    svc #1
-    bx lr
-END _start_thread
-
-
-
-LOCAL _end_thread
-    svc #2
-    .Letl: wfi
-    b .Letl
-END _end_thread

@@ -87,7 +87,7 @@ struct OS_Handler_return {
 	return ret;
 }
 
-void svc_sleep(uint32_t duration)
+void sleep(uint32_t duration)
 {
 	for (struct thread *p = head_thread(); p != NULL; p = next_thread(p)) {
 		if (p->state == ACTIVE) {
@@ -99,7 +99,7 @@ void svc_sleep(uint32_t duration)
 	}
 }
 
-void svc_end_thread(void) {
+void end_thread(void) {
 	last_active_thread->handle->done = 1;
 	free(last_active_thread->stack_start);
 	remove_thread(last_active_thread);
