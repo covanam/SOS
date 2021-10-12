@@ -42,6 +42,11 @@ SECTIONS
 		*(.bss)
 	} >RAM
 
+	.heap (NOLOAD):
+	{
+		*(.heap)
+	}
+
 	_total_size = .;
 
 	_got_start = ADDR(.got);

@@ -2,6 +2,11 @@
 #include <stddef.h>
 #include "header.h"
 
+#define HEAP_SIZE 1024U
+
+__attribute__ ((section(".heap")))
+uint32_t _heap_memory[HEAP_SIZE / sizeof(uint32_t)];
+
 extern int _flash_size[];
 extern int _total_size[];
 extern int _got_start[];
@@ -23,6 +28,8 @@ struct header _header = {
 
 void _entry(void)
 {
+	extern void init_malloc(void* heap_start, size_t heap_size);
+	init_malloc(_heap_memory, sizeof(_heap_memory));
 	extern int main();
 	main();
 }
