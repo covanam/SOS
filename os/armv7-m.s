@@ -112,9 +112,6 @@ BEGIN SVC_Handler
     /* call svc function */
     blx r5
 
-    /* return value */
-    str r0, [r4]
-
     pop {r4-r6, lr}
 
     bx lr

@@ -75,14 +75,10 @@ int main(void)
 		}
 
 		if (a != NULL) {
-			start_thread(a->entry);
+			void *h = start_thread(a->entry);
 
-			/* TODO: re-enable this
 			if (detach) detach_thread(h);
 			else wait_thread(h);
-			*/
-			/* suppress build warning for now... */
-			(void)detach;
 		}
 		else
 			printf("Unrecognized command: %s\n", buf);

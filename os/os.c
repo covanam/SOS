@@ -100,7 +100,8 @@ void sleep(uint32_t duration)
 }
 
 void end_thread(void) {
-	last_active_thread->handle->done = 1;
+	if (last_active_thread->handle != NULL)
+		*last_active_thread->handle = 1;
 	free(last_active_thread->stack_start);
 	remove_thread(last_active_thread);
 	last_active_thread = NULL;

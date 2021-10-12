@@ -14,7 +14,7 @@ static inline void *align8(void *ptr)
 	return (void *)p;
 }
 
-struct thread_handle *start_thread(void (*addr)(void))
+void start_thread(void (*addr)(void), void *handle)
 {
 	struct thread thr;
 	void *stack = malloc(THREAD_STACK_SIZE);
@@ -26,23 +26,8 @@ struct thread_handle *start_thread(void (*addr)(void))
 
 	thr.stackptr = stack;
 	thr.state = IDLE;
-	thr.handle = malloc(sizeof(struct thread_handle));
-	thr.handle->done = 0;
+	thr.handle = handle;
+	if (handle != NULL) *thr.handle = 0;
 
 	insert_thread(thr);
-
-	return thr.handle;
-}
-
-void wait_thread(struct thread_handle *h)
-{
-	while (h->done == 0) {
-		/* wait for thread completion */
-	}
-	free(h);
-}
-
-void detach_thread(struct thread_handle *h)
-{
-	free(h);
 }

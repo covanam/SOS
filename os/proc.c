@@ -33,5 +33,5 @@ void start_process(void *program)
 {
 	struct header h = load_program_to_ram(program);
 
-	detach_thread(start_thread(h.entry_addr));
+	start_thread(h.entry_addr, NULL);
 }
