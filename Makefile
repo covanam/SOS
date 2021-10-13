@@ -14,7 +14,7 @@ CFLAGS += -Iapps -Ios -Iperip
 ASFLAGS = -Ios
 
 # Linker options
-LDFLAGS = -nostdlib -Tlinker.ld
+LDFLAGS = -nostdlib -Tlinker.ld --orphan-handling=error
 
 vpath %.c os perip startup stdlib
 vpath %.s os

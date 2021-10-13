@@ -9,6 +9,7 @@ MEMORY
 {
     FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K
     RAM (rw) : ORIGIN = 0x20000000, LENGTH = 128K
+    must_be_empty (rwx): ORIGIN = 0, LENGTH = 0
 }
 
 SECTIONS
@@ -65,4 +66,12 @@ SECTIONS
     {
         _start_app = .;
     } >FLASH
+
+    /DISCARD/ :
+	{
+		*(.ARM.attributes)
+		*(.comment)
+	}
+
+    .must_be_empty : { *(*) } > must_be_empty
 }
